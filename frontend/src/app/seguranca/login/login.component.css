@@ -1,0 +1,27 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #346785;
+  }
+  mat-card {
+    padding-top: 30px;
+  }
+  
+  mat-error {
+    text-align: center;
+  }
+  
+  mat-progress-bar {
+      margin: 10px 0;
+  }
+  
+  mat-form-field {
+    width: 100%;
+  }
+  
+  button {
+    float: right;
+  }

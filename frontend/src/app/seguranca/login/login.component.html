@@ -1,0 +1,16 @@
+<mat-card>
+  <form #loginForm="ngForm">
+    <mat-form-field>
+      <input required matInput name="usuario" placeholder="Usuário" [(ngModel)]="usuario" />
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput required placeholder="Senha" [(ngModel)]="senha" name="senha" type="password" />
+    </mat-form-field>
+  </form>
+  <mat-error *ngIf="loginForm.dirty && credenciaisInvalidas">Login ou senha incorreto(s)</mat-error>
+  <mat-progress-bar *ngIf="exibirBarraDeProgresso" mode="query"></mat-progress-bar>
+  <button [disabled]="exibirBarraDeProgresso" (click)="autenticar()" mat-raised-button color="primary">
+    Login
+  </button>
+</mat-card>

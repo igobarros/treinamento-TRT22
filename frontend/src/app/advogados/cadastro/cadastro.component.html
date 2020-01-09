@@ -1,0 +1,187 @@
+<div>
+  <mat-card>
+    <div class="carregando" *ngIf="exibirSpinner">
+      <mat-spinner></mat-spinner>
+    </div>
+    <h1>
+      Advogados
+    </h1>
+    <mat-card>
+      <form (ngSubmit)="salvarAdvogado($event)" #formulario="ngForm">
+        <mat-form-field class="form-field-nome">
+          <input
+            required
+            matInput
+            name="nome"
+            spellcheck="false"
+            #campoNome="ngModel"
+            placeholder="Nome"
+            [(ngModel)]="advogado.nome"
+          />
+          <mat-error *ngIf="campoNome.hasError('required')">Nome é obrigatório</mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <input
+            required
+            matInput
+            spellcheck="false"
+            name="oab"
+            pattern="[a-zA-Z0-9]{4}-[a-zA-Z]{2}"
+            #campoOAB="ngModel"
+            placeholder="Nº OAB"
+            [(ngModel)]="advogado.oab"
+          />
+          <mat-error *ngIf="campoOAB.hasError('required')">Nº OAB é obrigatório</mat-error>
+          <mat-error *ngIf="campoOAB.hasError('pattern')">Nº OAB é inválido</mat-error>
+          <mat-hint>Formato: [a-zA-Z0-9]&#123;4&#125;-[a-zA-Z]&#123;2&#125; </mat-hint>
+        </mat-form-field>
+
+        <mat-form-field class="form-field-email">
+          <input
+            #campoEmail="ngModel"
+            required
+            matInput
+            name="email"
+            placeholder="Email"
+            type="email"
+            [(ngModel)]="advogado.email"
+          />
+          <mat-error *ngIf="campoEmail.hasError('required')">Email é obrigatório</mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <input
+            #campoTelefone="ngModel"
+            required
+            matInput
+            name="telefone"
+            placeholder="Telefone"
+            [(ngModel)]="advogado.telefone"
+          />
+          <mat-error *ngIf="campoTelefone.hasError('required')">Telefone é obrigatório</mat-error>
+        </mat-form-field>
+
+        <button
+          mat-raised-button
+          type="submit"
+          [disabled]="!formulario.form.valid"
+          aria-label="Salvar"
+          color="primary"
+        >
+          <fa-icon [icon]="['fa', 'save']"></fa-icon> Salvar
+        </button>
+        <button
+          matTooltip="Resetar formulário"
+          aria-label="Resetar formulário"
+          (click)="resetarFormulario()"
+          *ngIf="!isModoEdicao()"
+          [disabled]="formulario.form.pristine"
+          mat-raised-button
+          color="primary"
+        >
+          <fa-icon [icon]="['fa', 'eraser']"></fa-icon>
+        </button>
+
+        <button
+          matTooltip="Cancelar edição"
+          aria-label="Cancelar edição"
+          (click)="resetarFormulario()"
+          type="button"
+          *ngIf="isModoEdicao()"
+          mat-raised-button
+          color="primary"
+        >
+          <fa-icon [icon]="['fa', 'ban']"></fa-icon>
+        </button>
+      </form>
+    </mat-card>
+
+    <table mat-table [dataSource]="dataSource">
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef>#Id</th>
+        <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="nome">
+        <th mat-header-cell *matHeaderCellDef>Nome</th>
+        <td mat-cell *matCellDef="let element">{{ element.nome }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef>E-mail</th>
+        <td mat-cell *matCellDef="let element">{{ element.email }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="oab">
+        <th mat-header-cell *matHeaderCellDef>Nº OAB</th>
+        <td mat-cell *matCellDef="let element">{{ element.oab }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="telefone">
+        <th mat-header-cell *matHeaderCellDef>Telefone</th>
+        <td mat-cell *matCellDef="let element">{{ element.telefone }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="editar">
+        <th mat-header-cell *matHeaderCellDef>Editar</th>
+        <td mat-cell *matCellDef="let element">
+          <button
+            matTooltip="Editar advogado"
+            (click)="editar(element)"
+            aria-label="Editar"
+            mat-raised-button
+            color="primary"
+          >
+            <fa-icon size="sm" [icon]="['fa', 'edit']"></fa-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="excluir">
+        <th mat-header-cell *matHeaderCellDef>Excluir</th>
+        <td mat-cell *matCellDef="let element">
+          <button
+            matTooltip="Excluri advogado"
+            (click)="excluir(element)"
+            aria-label="Excluir"
+            mat-raised-button
+            color="warn"
+          >
+            <fa-icon size="sm" [icon]="['fa', 'trash-alt']"></fa-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="processos">
+          <th mat-header-cell *matHeaderCellDef>Processos</th>
+          <td mat-cell *matCellDef="let element">
+            <a
+              matTooltip="Gerenciar processos"
+              [routerLink]="['/processos']"
+              [state]="{ data: element }"
+              aria-label="Gerenciar processos"
+              mat-raised-button
+              color="warn"
+            >
+              <fa-icon size="sm" [icon]="['fa', 'inbox']"></fa-icon>
+          </a>
+          </td>
+      </ng-container>         
+      
+
+      <tr mat-header-row *matHeaderRowDef="colunas"></tr>
+      <tr mat-row *matRowDef="let row; columns: colunas"></tr>
+    </table>
+
+    <mat-paginator
+      (page)="atualizarListaDeAdvogados($event)"
+      [pageSize]="tamanhoPagina"
+      [length]="totalDeAdvogados"
+      [pageIndex]="paginaAtual"
+      showFirstLastButtons
+      [pageSizeOptions]="[5, 10, 25, 100]"
+    >
+    </mat-paginator>
+  </mat-card>
+</div>

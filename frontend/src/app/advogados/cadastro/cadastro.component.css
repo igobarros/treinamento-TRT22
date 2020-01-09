@@ -1,0 +1,73 @@
+div {
+    padding: 20px;
+  }
+  
+  .carregando {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 56px;
+    right: 0;
+    background: rgba(0, 0, 0, 0.15);
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+  }
+  
+  mat-form-field {
+    flex-grow: 1;
+    margin-right: 20px;
+  }
+  
+  form button:nth-of-type(1) {
+    margin-right: 15px;
+  }
+  
+  form .form-field-nome {
+    flex-grow: 3;
+  }
+  
+  form .form-field-email {
+    flex-flow: 2;
+  }
+  
+  table,
+  mat-paginator {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  
+  .mat-column-id,
+  .mat-column-oab,
+  .mat-column-editar,
+  .mat-column-processos,
+  .mat-column-excluir {
+    width: 5%;
+    text-align: center;
+  }
+  
+  .mat-column-id {
+    text-align: left;
+  }
+  
+  .mat-column-editar,
+  .mat-column-excluir {
+    width: 5%;
+  }
+  
+  .mat-column-nome {
+    width: 40%;
+  }
+  .mat-column-email,
+  .mat-column-telefone {
+    width: 15%;
+  }

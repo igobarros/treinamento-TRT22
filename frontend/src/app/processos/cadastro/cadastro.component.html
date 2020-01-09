@@ -1,0 +1,149 @@
+<div>
+  <mat-card>
+    <div class="carregando" *ngIf="exibirSpinner">
+      <mat-spinner></mat-spinner>
+    </div>
+    <h1>
+      <a routerLink="/">Home </a> >> Processos de {{advogado.nome}}
+    </h1>
+    <mat-card>
+      <form (ngSubmit)="salvarProcessos($event)" #formulario="ngForm">
+        <mat-form-field class="form-field-numero">
+          <input
+            required
+            matInput
+            name="numero"
+            spellcheck="false"
+            #campoNumero="ngModel"
+            pattern="[\d]{7}-[\d]{2}\.[\d]{4}\.[\d]\.[\d]{2}\.[\d]{4}"
+            placeholder="Numero"
+            [(ngModel)]="processo.numero"
+          />
+          <mat-error *ngIf="campoNumero.hasError('required')">Número é obrigatório</mat-error>
+          <mat-error *ngIf="campoNumero.hasError('pattern')">Nº é inválido, use o formato CNJ</mat-error>
+        </mat-form-field>
+
+
+        <mat-form-field class="form-field-descricao">
+          <input
+            #campoDescricao="ngModel"
+            required
+            matInput
+            name="descricao"
+            placeholder="Descricão"
+            type="text"
+            [(ngModel)]="processo.descricao"
+          />
+          <mat-error *ngIf="campoDescricao.hasError('required')">Descrição é obrigatória</mat-error>
+        </mat-form-field>
+
+        <button
+          mat-raised-button
+          type="submit"
+          [disabled]="!formulario.form.valid"
+          aria-label="Salvar"
+          color="primary"
+        >
+          <fa-icon [icon]="['fa', 'save']"></fa-icon> Salvar
+        </button>
+        <button
+          matTooltip="Resetar formulário"
+          aria-label="Resetar formulário"
+          (click)="resetarFormulario()"
+          *ngIf="!isModoEdicao()"
+          [disabled]="formulario.form.pristine"
+          mat-raised-button
+          color="primary"
+        >
+          <fa-icon [icon]="['fa', 'eraser']"></fa-icon>
+        </button>
+
+        <button
+          matTooltip="Cancelar edição"
+          aria-label="Cancelar edição"
+          (click)="resetarFormulario()"
+          type="button"
+          *ngIf="isModoEdicao()"
+          mat-raised-button
+          color="primary"
+        >
+          <fa-icon [icon]="['fa', 'ban']"></fa-icon>
+        </button>
+      </form>
+    </mat-card>
+
+    
+    <table mat-table [dataSource]="dataSource">
+
+      <ng-container matColumnDef="numero">
+        <th mat-header-cell *matHeaderCellDef>
+          #Número
+          <span class="filtro">
+            <fa-icon size="lg" *ngIf="!filtrarPorNumero" (click)="filtrarPorNumero=true" [icon]="['fa', 'search']"></fa-icon>
+          
+            <input (keyup)="atualizarListaDeProcessos({})" *ngIf="filtrarPorNumero" [(ngModel)]="filtroNumero" type="text">
+            <fa-icon size="lg" *ngIf="filtrarPorNumero" (click)="limparFiltroNumero()" [icon]="['fa', 'ban']"></fa-icon>
+          
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.numero }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="descricao">
+        <th mat-header-cell *matHeaderCellDef>
+          Descrição
+          <span class="filtro">
+              <fa-icon (click)="filtrarPorDescricao=true"  *ngIf="!filtrarPorDescricao" size="lg" [icon]="['fa', 'search']"></fa-icon>
+          
+              <input (keyup)="atualizarListaDeProcessos({})" *ngIf="filtrarPorDescricao" [(ngModel)]="filtroDescricao" type="text">
+              <fa-icon size="lg" *ngIf="filtrarPorDescricao" (click)="limparFiltroPorDescricao()" [icon]="['fa', 'ban']"></fa-icon>
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.descricao }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="editar">
+        <th mat-header-cell *matHeaderCellDef>Editar</th>
+        <td mat-cell *matCellDef="let element">
+          <button
+            matTooltip="Editar advogado"
+            (click)="editar(element)"
+            aria-label="Editar"
+            mat-raised-button
+            color="primary"
+          >
+            <fa-icon size="sm" [icon]="['fa', 'edit']"></fa-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="excluir">
+        <th mat-header-cell *matHeaderCellDef>Excluir</th>
+        <td mat-cell *matCellDef="let element">
+          <button
+            matTooltip="Excluri advogado"
+            (click)="excluir(element)"
+            aria-label="Excluir"
+            mat-raised-button
+            color="warn"
+          >
+            <fa-icon size="sm" [icon]="['fa', 'trash-alt']"></fa-icon>
+          </button>
+        </td>
+      </ng-container>      
+
+      <tr mat-header-row *matHeaderRowDef="colunas"></tr>
+      <tr mat-row *matRowDef="let row; columns: colunas"></tr>
+    </table>
+
+    <mat-paginator
+      (page)="atualizarListaDeProcessos($event)"
+      [pageSize]="tamanhoPagina"
+      [length]="totalDeProcessos"
+      [pageIndex]="paginaAtual"
+      showFirstLastButtons
+      [pageSizeOptions]="[5, 10, 25, 100]"
+    >
+    </mat-paginator>
+  </mat-card>
+</div>
